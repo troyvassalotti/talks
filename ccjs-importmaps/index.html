@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Import(map) Whatever You Want</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<ol id="slides">
+  <li class="slide slide--text">
+    <div class="content">
+      <h1>Import(map) Whatever You Want</h1>
+      <p>Presented by Troy</p>
+      <p><a target="_blank" href="https://fosstodon.org/@rest">@rest@fosstodon.org</a></p>
+    </div>
+  </li>
+
+  <li class="slide slide--title">
+    <div class="content">
+      <h2>Imports?</h2>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <p>Imports in JavaScript can either come in the ES Module or CommonJS syntax.</p>
+      <br>
+      <pre><code class="lang-js"><span class="hljs-keyword">const</span> dayjs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'dayjs'</span>) <span class="hljs-comment">// CommonJS</span>
+<span class="hljs-keyword">import</span> dayjs <span class="hljs-keyword">from</span> <span class="hljs-string">'dayjs'</span>; <span class="hljs-comment">// ES Module</span>
+</code></pre>
+    </div>
+  </li>
+
+  <li class="slide slide--title">
+    <div class="content">
+      <h2>And Import Maps?</h2>
+    </div>
+  </li>
+
+  <li class="slide slide--text" data-topic="Background">
+    <div class="content">
+      <blockquote>
+        <p>An import map is a JSON object that allows developers to control how the browser resolves module specifiers when importing JavaScript modules. It provides a mapping between the text used as the module specifier in an <code>import</code> statement or <code>import()</code> operator, and the corresponding value that will replace the text when resolving the specifier. The JSON object must conform to the Import map JSON representation format.</p>
+        <cite class="small-text"><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap">MDN</a></cite>
+      </blockquote>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <p>In short, import maps allow you to use the same ES Module syntax you're familiar with in Node via your favorite bundler <strong>plus more</strong>, but in the browser.</p>
+    </div>
+  </li>
+
+  <li class="slide slide--text" data-topic="Example">
+    <div class="content">
+      <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"importmap"</span>&gt;</span><span class="actionscript">
+{
+  <span class="hljs-string">"imports"</span>: {
+    <span class="hljs-string">"dayjs"</span>: <span class="hljs-string">"https://cdn.skypack.dev/dayjs@1.10.7"</span>,
+    <span class="hljs-string">"react-dom"</span>: <span class="hljs-string">"https://cdn.skypack.dev/react-dom"</span>,
+    <span class="hljs-string">"square"</span>: <span class="hljs-string">"./modules/square.js"</span>,
+    <span class="hljs-string">"lodash/"</span>: <span class="hljs-string">"/node_modules/lodash-es/"</span>
+  }
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+      <p><em>Note the different module specifiers.</em></p>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <ol>
+        <li>Exact version match</li>
+        <li>Latest version match</li>
+        <li>Relative path</li>
+        <li>Full package match</li>
+      </ol>
+    </div>
+  </li>
+
+  <li class="slide slide--text" data-topic="Usage">
+    <div class="content">
+      <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"module"</span>&gt;</span><span class="javascript">
+  <span class="hljs-keyword">import</span> dayjs <span class="hljs-keyword">from</span> <span class="hljs-string">'dayjs'</span>;
+
+  <span class="hljs-built_in">console</span>.log(dayjs(<span class="hljs-string">'2019-01-25'</span>).format(<span class="hljs-string">'YYYY-MM-DDTHH:mm:ssZ[Z]'</span>));
+
+  <span class="hljs-keyword">import</span> toUpper <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash/toUpper.js'</span>;
+  <span class="hljs-keyword">import</span> toLower <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash/toLower.js'</span>;
+
+  <span class="hljs-built_in">console</span>.log(toUpper(<span class="hljs-string">'hello'</span>));
+  <span class="hljs-built_in">console</span>.log(toLower(<span class="hljs-string">'HELLO'</span>));
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <h3>Scopes Are Possible</h3>
+      <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"importmap"</span>&gt;</span><span class="actionscript">
+  {
+    <span class="hljs-string">"imports"</span>: {
+      <span class="hljs-string">"lodash/"</span>: <span class="hljs-string">"https://unpkg.com/lodash-es@4.17.21/"</span>
+    },
+    <span class="hljs-string">"scopes"</span>: {
+      <span class="hljs-string">"/static/js"</span>: {
+        <span class="hljs-string">"lodash/"</span>: <span class="hljs-string">"https://unpkg.com/lodash-es@3.10.1/"</span>
+      }
+    }
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+      <p class="small-text">With this mapping, any modules in the <code>/static/js</code> path will use the <code>https://unpkg.com/lodash-es@3.10.1/</code> URL when referring to the <code>lodash/</code> specifier in an import statement, while other modules will use <code>https://unpkg.com/lodash-es@4.17.21/</code>.</p>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <h3>There Is One Pre-Requisite</h3>
+      <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">async</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/es-module-shims@1.3.0/dist/es-module-shims.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+    </div>
+  </li>
+
+  <li class="slide slide--title">
+    <div class="content">
+      <h2>It's Cool, But Show Me Why I Should Stop What I'm Doing And Use This.</h2>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <ol>
+        <li>You like using bare modules.</li>
+        <li>You don't want to be stuck changing more files than needed due to changes in path structure.</li>
+        <li>You want to copy/paste straight from a library's source.</li>
+        <li>You like being a revolutionary.</li>
+      </ol>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <h3>My Own Import Map</h3>
+      <pre class="small-text"><code class="lang-html">&lt;script type=<span class="hljs-string">"importmap"</span>&gt;
+{
+  <span class="hljs-string">"imports"</span>: {
+    <span class="hljs-string">"lit"</span>: <span class="hljs-string">"https://cdn.skypack.dev/lit@2.6.1"</span>,
+    <span class="hljs-string">"lit-map"</span>: <span class="hljs-string">"https://cdn.skypack.dev/lit@2.6.1/directives/map.js"</span>,
+    <span class="hljs-string">"d3"</span>: <span class="hljs-string">"https://cdn.skypack.dev/d3@7.6"</span>,
+    <span class="hljs-string">"tone"</span>: <span class="hljs-string">"https://cdn.skypack.dev/tone@14.7.77"</span>,
+    <span class="hljs-string">"slugify"</span>: <span class="hljs-string">"https://cdn.skypack.dev/@sindresorhus/slugify"</span>,
+    <span class="hljs-string">"petite-vue"</span>: <span class="hljs-string">"/assets/js/petite-vue.js"</span>,
+    <span class="hljs-string">"cheatcodes"</span>: <span class="hljs-string">"/assets/js/cheatcodes.js"</span>,
+    <span class="hljs-string">"plvylist"</span>: <span class="hljs-string">"/assets/js/plvylist.js"</span>,
+    <span class="hljs-string">"cloudysky"</span>: <span class="hljs-string">"/assets/js/cloudysky.js"</span>,
+    <span class="hljs-string">"typewriter"</span>: <span class="hljs-string">"/assets/js/typewriter.js"</span>,
+    <span class="hljs-string">"detune"</span>: <span class="hljs-string">"/assets/js/detune.js"</span>
+  }
+}
+&lt;<span class="hljs-regexp">/script&gt;</span>
+</code></pre>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <h3>My Workflow</h3>
+      <ol>
+        <li>Create a web component and publish it to NPM.</li>
+        <li>Install that component in my site via NPM.</li>
+        <li>Tell Eleventy to passthrough the file from <code>node_modules</code> to a public directory.</li>
+        <li>Bare module import my component which bare module imports Lit.</li>
+      </ol>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <h3>Component Code</h3>
+      <pre class="small-text"><code class="lang-js"><span class="hljs-keyword">import</span> { html, <span class="hljs-type">LitElement</span>, nothing } from <span class="hljs-string">"lit"</span>;
+
+export <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CloudySky</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">LitElement</span> </span>{
+  <span class="hljs-comment">/* snip */</span>
+}
+</code></pre><br>
+      <p class="small-text"><em>Editor's Note:</em> Each component's Vite config sets Lit as an external dependency so Lit is not bundled with the component during build.</p>
+      <br>
+      <h3>Site Code</h3>
+      <pre class="small-text"><code class="lang-html"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"module"</span>&gt;</span><span class="actionscript">
+  <span class="hljs-meta"><span class="hljs-meta-keyword">import</span> </span></span></span><span class="hljs-template-variable">{ CloudySky }</span><span class="xml"><span class="javascript"> <span class="hljs-keyword">from</span> <span class="hljs-string">"cloudysky"</span>
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">main</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">cloudy-sky</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>The component works!<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>And this is all in the browser!<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">cloudy-sky</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span>
+</code></pre>
+    </div>
+  </li>
+
+  <li class="slide slide--text">
+    <div class="content">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.honeybadger.io/blog/import-maps/">https://www.honeybadger.io/blog/import-maps/</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap">https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap</a></li>
+      </ul>
+    </div>
+  </li>
+</ol>
+<!-- partial -->
+  
+</body>
+</html>
